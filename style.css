@@ -1,0 +1,432 @@
+:root {
+  --bg-color: #090808;
+  --surface-color: #121110;
+  --surface-alt: #181715;
+  --border-color: #272421;
+  --border-highlight: #3d3834;
+  --accent-gold: #c9a66b;
+  --accent-gold-hover: #e0be82;
+  --accent-bone: #dfdeda;
+  --text-main: #dfdeda;
+  --text-muted: #827e78;
+  --font-serif: "Georgia", "Times New Roman", serif;
+  --font-mono: "Consolas", "Courier New", monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: var(--font-serif);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 20px 48px;
+}
+
+.oracle-app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1080px;
+  gap: 20px;
+}
+
+.oracle-header {
+  text-align: center;
+}
+
+.oracle-header h1 {
+  font-size: 2.3rem;
+  font-weight: 300;
+  letter-spacing: 0.38em;
+  color: var(--accent-gold);
+  text-shadow: 0 0 18px rgba(201, 166, 107, 0.25);
+  margin-bottom: 6px;
+}
+
+.oracle-header .subtitle {
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.invocation-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  padding: 12px 16px;
+}
+
+.input-group {
+  display: flex;
+  flex: 1;
+  min-width: 320px;
+  gap: 8px;
+}
+
+.input-group input {
+  flex: 1;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 10px 14px;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 10px rgba(201, 166, 107, 0.15);
+}
+
+.playback-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background-color: var(--surface-alt);
+  color: var(--text-main);
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  padding: 8px 14px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+button:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.btn-primary {
+  background-color: #24201a;
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-gold);
+  color: #0b0a09;
+}
+
+.btn-highlight {
+  border-color: #8c7346;
+  color: #dfcaa2;
+}
+
+.btn-highlight:hover {
+  border-color: var(--accent-gold-hover);
+  background-color: #1e1b16;
+}
+
+/* Disposición general */
+.workspace-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.canvas-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Badge de Estado del Sello */
+.seal-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  font-family: var(--font-mono);
+  border: 1px solid var(--border-color);
+  background-color: var(--surface-color);
+  transition: all 0.3s ease;
+}
+
+.seal-badge.in-progress {
+  color: #e0be82;
+  border-color: #4a3e2a;
+}
+
+.seal-badge.sealed {
+  color: #f7d594;
+  border-color: var(--accent-gold);
+  background-color: #1a1712;
+  box-shadow: 0 0 14px rgba(201, 166, 107, 0.25);
+  animation: pulseSeal 3s infinite alternate ease-in-out;
+}
+
+@keyframes pulseSeal {
+  0% { box-shadow: 0 0 8px rgba(201, 166, 107, 0.2); }
+  100% { box-shadow: 0 0 20px rgba(201, 166, 107, 0.45); }
+}
+
+#canvas-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  background-color: #0b0a09;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
+}
+
+#canvas-container canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+
+.enigma-readout {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  width: 640px;
+}
+
+.info-card {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.info-card .label {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.info-card .value {
+  font-size: 0.88rem;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.info-card .value.code {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent-gold);
+}
+
+/* Panel Lateral de Parámetros */
+.parameters-panel {
+  flex: 1;
+  min-width: 320px;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.panel-title {
+  font-size: 0.95rem;
+  letter-spacing: 0.22em;
+  color: var(--accent-gold);
+  font-weight: 400;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.param-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-title {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Toggles estilo checkbox con descripción */
+.toggle-control {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  padding: 6px 8px;
+  background-color: var(--surface-alt);
+  border: 1px solid var(--border-color);
+  transition: border-color 0.2s;
+}
+
+.toggle-control:hover {
+  border-color: var(--border-highlight);
+}
+
+.toggle-control input[type="checkbox"] {
+  accent-color: var(--accent-gold);
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.toggle-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toggle-label strong {
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.toggle-label small {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Selects y Rows */
+.control-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-row label {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+select {
+  background-color: var(--surface-alt);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  padding: 8px 10px;
+  outline: none;
+  cursor: pointer;
+}
+
+select:focus {
+  border-color: var(--accent-gold);
+}
+
+/* Editor de bits B/S */
+.rule-bits-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: var(--surface-alt);
+  border: 1px solid var(--border-color);
+  padding: 8px 10px;
+}
+
+.bit-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bit-title {
+  font-size: 0.74rem;
+  font-family: var(--font-mono);
+  color: var(--accent-gold);
+  min-width: 110px;
+}
+
+.bit-boxes {
+  display: flex;
+  gap: 4px;
+}
+
+.bit-box-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.bit-box-label input {
+  accent-color: var(--accent-gold);
+  cursor: pointer;
+  margin-bottom: 2px;
+}
+
+.bit-box-label.active {
+  color: var(--accent-gold);
+}
+
+/* Sliders */
+.slider-control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.slider-val {
+  font-family: var(--font-mono);
+  color: var(--accent-gold);
+}
+
+input[type="range"] {
+  accent-color: var(--accent-gold);
+  background: var(--border-color);
+  cursor: pointer;
+  height: 4px;
+}
+
+/* Responsive */
+@media (max-width: 1040px) {
+  .workspace-layout {
+    flex-direction: column;
+    align-items: center;
+  }
+  .enigma-readout {
+    width: 100%;
+    max-width: 640px;
+  }
+  .parameters-panel {
+    width: 100%;
+    max-width: 640px;
+  }
+}

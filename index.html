@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oráculo — Autómata Celular Simétrico</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="libraries/p5.min.js"></script>
+    <script src="oracle.js"></script>
+    <script src="automaton.js"></script>
+  </head>
+  <body>
+    <main class="oracle-app">
+      <!-- Encabezado Místico -->
+      <header class="oracle-header">
+        <h1>ORÁCULO</h1>
+        <p class="subtitle">Exploración generativa del enigma, la revelación y el cuerpo monstruoso</p>
+      </header>
+
+      <!-- Panel de Invocación Principal -->
+      <section class="invocation-bar">
+        <div class="input-group">
+          <input
+            type="text"
+            id="nameInput"
+            placeholder="Escribe un nombre o consulta para el Oráculo..."
+            autocomplete="off"
+            value="Patmos"
+          />
+          <button id="btnConsult" class="btn-primary">Consultar Oráculo</button>
+        </div>
+        <div class="playback-controls">
+          <button id="btnPlayPause" class="btn-secondary">Pausar</button>
+          <button id="btnStep" class="btn-secondary">Paso a paso</button>
+          <button id="btnReset" class="btn-secondary">Renacer Embrión</button>
+          <button id="btnSaveGlyph" class="btn-secondary btn-highlight">Descargar Glifo</button>
+        </div>
+      </section>
+
+      <!-- Área de Trabajo Central: Canvas + Panel de Parámetros -->
+      <div class="workspace-layout">
+        <!-- Canvas de la Criatura -->
+        <div class="canvas-column">
+          <!-- Indicador de Estado del Sello -->
+          <div id="sealStatusBadge" class="seal-badge in-progress">
+            <span class="seal-icon">✦</span>
+            <span id="sealStatusText">REVELACIÓN EN CURSO...</span>
+          </div>
+
+          <div id="canvas-container"></div>
+
+          <!-- Lectura de la Firma Oracular -->
+          <section class="enigma-readout">
+            <div class="info-card">
+              <span class="label">CONSULTA:</span>
+              <span id="readoutName" class="value">—</span>
+            </div>
+            <div class="info-card">
+              <span class="label">FIRMA ONTO-LÓGICA:</span>
+              <span id="readoutHash" class="value code">—</span>
+            </div>
+            <div class="info-card">
+              <span class="label">ARQUETIPO BIOLÓGICO:</span>
+              <span id="readoutRule" class="value code">—</span>
+            </div>
+            <div class="info-card">
+              <span class="label">CICLO DE SELLADO:</span>
+              <span id="readoutGen" class="value code">0 / 120</span>
+            </div>
+          </section>
+        </div>
+
+        <!-- Panel Lateral de Modulación y Experimentación -->
+        <aside class="parameters-panel">
+          <h2 class="panel-title">MODULACIÓN ANATÓMICA</h2>
+
+          <!-- Bloque de Confinamiento & Estructura -->
+          <div class="param-section">
+            <h3 class="section-title">Contención & Hueso</h3>
+            
+            <!-- B-1: Membrana Biológica -->
+            <label class="toggle-control">
+              <input type="checkbox" id="chkMembrane" checked />
+              <span class="toggle-label">
+                <strong>Membrana Radial (B-1)</strong>
+                <small>Impide todo desborde fuera del radio vital</small>
+              </span>
+            </label>
+
+            <!-- A-1: Esqueleto Inmortal -->
+            <label class="toggle-control">
+              <input type="checkbox" id="chkImmortal" checked />
+              <span class="toggle-label">
+                <strong>Esqueleto Inmortal (A-1)</strong>
+                <small>Las células germinales originarias nunca mueren</small>
+              </span>
+            </label>
+
+            <!-- 1-A: Apoptosis / Necrosis Central -->
+            <label class="toggle-control">
+              <input type="checkbox" id="chkApoptosis" checked />
+              <span class="toggle-label">
+                <strong>Apoptosis Central (1-A)</strong>
+                <small>Asfixia y cavidades internas por sobrepoblación</small>
+              </span>
+            </label>
+
+            <div class="slider-control" id="ctrlApoptosisThresh">
+              <div class="slider-header">
+                <span>Umbral de Asfixia:</span>
+                <span id="valApoptosisThresh" class="slider-val">&ge; 6 vecinos</span>
+              </div>
+              <input type="range" id="sliderApoptosisThresh" min="4" max="8" step="1" value="6" />
+            </div>
+
+            <!-- Huella Indeleble -->
+            <label class="toggle-control">
+              <input type="checkbox" id="chkIndelible" checked />
+              <span class="toggle-label">
+                <strong>Rastro Indeleble (Fósil)</strong>
+                <small>La huella biológica nunca se borra del lienzo</small>
+              </span>
+            </label>
+
+            <!-- Simetría Axial -->
+            <label class="toggle-control">
+              <input type="checkbox" id="chkSymmetry" checked />
+              <span class="toggle-label">
+                <strong>Simetría Axial</strong>
+                <small>Espejo Rorschach bilateral en el eje central</small>
+              </span>
+            </label>
+          </div>
+
+          <!-- Sellado & Tiempo -->
+          <div class="param-section">
+            <h3 class="section-title">Sellado de la Revelación</h3>
+            
+            <div class="slider-control">
+              <div class="slider-header">
+                <span>Límite de Generaciones:</span>
+                <span id="valMaxGen" class="slider-val">120</span>
+              </div>
+              <input type="range" id="sliderMaxGen" min="40" max="250" step="5" value="120" />
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-header">
+                <span>Radio de la Membrana:</span>
+                <span id="valMembraneRad" class="slider-val">32 celdas</span>
+              </div>
+              <input type="range" id="sliderMembraneRad" min="16" max="38" step="1" value="32" />
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-header">
+                <span>Velocidad de Evolución (FPS):</span>
+                <span id="valFps" class="slider-val">24</span>
+              </div>
+              <input type="range" id="sliderFps" min="1" max="60" value="24" />
+            </div>
+          </div>
+
+          <!-- Genética & Reglas -->
+          <div class="param-section">
+            <h3 class="section-title">Genética & Reglas</h3>
+            <div class="control-row">
+              <label for="selectRule">Arquetipo Curado:</label>
+              <select id="selectRule">
+                <option value="auto">Automático (Firma del Nombre)</option>
+                <option value="vertebra">Vértebra & Calavera [B3/S238]</option>
+                <option value="insectoide">Insectoide Pulsante [B36/S245]</option>
+                <option value="ameba_acotada">Ameba Contenida [B35/S1358]</option>
+                <option value="membrana">Cavidad & Membrana [B37/S23]</option>
+                <option value="coral_denso">Tejido Coralino [B36/S23]</option>
+                <option value="quimera">Quimera Mitótica [B34/S34]</option>
+                <option value="nervaduras">Sedas & Nervaduras [B367/S23]</option>
+              </select>
+            </div>
+
+            <!-- Editor Vivo B/S -->
+            <div class="rule-bits-editor">
+              <div class="bit-group">
+                <span class="bit-title">Nacimiento (B):</span>
+                <div id="birthCheckboxes" class="bit-boxes"></div>
+              </div>
+              <div class="bit-group">
+                <span class="bit-title">Supervivencia (S):</span>
+                <div id="survivalCheckboxes" class="bit-boxes"></div>
+              </div>
+            </div>
+
+            <div class="control-row">
+              <label for="selectPalette">Paleta Estética:</label>
+              <select id="selectPalette">
+                <option value="auto">Automática (Firma del Nombre)</option>
+                <option value="0">Pergamino & Bilis</option>
+                <option value="1">Carbón & Sangre Seca</option>
+                <option value="2">Hueso & Ceniza</option>
+                <option value="3">Éter & Manía Mistérica</option>
+                <option value="4">Cobre & Azufre</option>
+              </select>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <script src="sketch.js"></script>
+  </body>
+</html>
