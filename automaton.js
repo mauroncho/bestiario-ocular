@@ -30,7 +30,7 @@ class SymmetricAutomaton {
     this.isImmortal = this.createGrid();
     this.germinalSeed = this.createGrid();
     this.necrotized = this.createGrid();
-    this.immortalCoreEnabled = true;
+    this.immortalCoreEnabled = false; // Desactivado por defecto: las células originarias pueden morir
 
     // Regla 1-A: Apoptosis / Necrosis por Asfixia (Sobrepoblación Central)
     this.apoptosisEnabled = true;

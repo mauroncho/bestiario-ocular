@@ -20,7 +20,7 @@ let userOverrides = {
   ruleId: 'auto',
   birth: null,
   survival: null,
-  paletteIndex: undefined,
+  paletteIndex: 1, // Fijo en "Carbón & Sangre Seca" (Rojo Sangre)
   density: 0.45,
   maxGenerations: null,
   membraneRadius: null
@@ -48,9 +48,25 @@ function setup() {
   initDOMReferences();
   buildRuleCheckboxes();
   attachEventListeners();
+  setupLabModeShortcuts();
 
   // Consulta inicial predeterminada
   triggerConsultation();
+}
+
+function setupLabModeShortcuts() {
+  // Activar modo laboratorio si la URL incluye ?dev=true o ?lab=true
+  if (new URLSearchParams(window.location.search).has('dev') || new URLSearchParams(window.location.search).has('lab')) {
+    document.body.classList.add('show-lab-ui');
+  }
+
+  // Atajo de teclado: Presionar 'D' fuera del input de texto alterna la visibilidad de la UI de laboratorio
+  window.addEventListener('keydown', (e) => {
+    if (document.activeElement === inputElem) return;
+    if (e.key === 'd' || e.key === 'D') {
+      document.body.classList.toggle('show-lab-ui');
+    }
+  });
 }
 
 function initDOMReferences() {
@@ -93,6 +109,7 @@ function initDOMReferences() {
 }
 
 function buildRuleCheckboxes() {
+  if (!birthBoxesContainer || !survivalBoxesContainer) return;
   birthBoxesContainer.innerHTML = '';
   survivalBoxesContainer.innerHTML = '';
 
@@ -110,6 +127,7 @@ function buildRuleCheckboxes() {
 }
 
 function syncRuleCheckboxes(birth, survival) {
+  if (!birthBoxesContainer || !survivalBoxesContainer) return;
   const bInputs = birthBoxesContainer.querySelectorAll('input');
   bInputs.forEach((input) => {
     const bit = parseInt(input.dataset.bit, 10);
@@ -128,6 +146,7 @@ function syncRuleCheckboxes(birth, survival) {
 }
 
 function readRuleCheckboxes() {
+  if (!birthBoxesContainer || !survivalBoxesContainer) return;
   const birth = [];
   birthBoxesContainer.querySelectorAll('input:checked').forEach((inp) => {
     birth.push(parseInt(inp.dataset.bit, 10));
@@ -144,7 +163,7 @@ function readRuleCheckboxes() {
   automaton.setRule({ birth, survival });
 
   const ruleStr = `B${birth.join('')}/S${survival.join('')}`;
-  readoutRule.textContent = `Manual [${ruleStr}]`;
+  if (readoutRule) readoutRule.textContent = `Manual [${ruleStr}]`;
 
   birthBoxesContainer.querySelectorAll('label').forEach((lbl) => {
     lbl.classList.toggle('active', lbl.querySelector('input').checked);
@@ -173,94 +192,114 @@ function attachEventListeners() {
     }
   });
 
-  btnPlayPause.addEventListener('click', togglePlayPause);
+  if (btnPlayPause) btnPlayPause.addEventListener('click', togglePlayPause);
 
-  btnStep.addEventListener('click', () => {
-    if (automaton.isSealed) return;
-    isRunning = false;
-    btnPlayPause.textContent = 'Reanudar';
-    automaton.step();
-    updateGenDisplay();
-  });
-
-  btnReset.addEventListener('click', () => {
-    if (currentGenome) {
-      automaton.plantEmbryo(currentGenome.embryo, currentGenome.maxGenerations, currentGenome.membraneRadius);
+  if (btnStep) {
+    btnStep.addEventListener('click', () => {
+      if (automaton.isSealed) return;
+      isRunning = false;
+      if (btnPlayPause) btnPlayPause.textContent = 'Reanudar';
+      automaton.step();
       updateGenDisplay();
-      updateSealBadge(false);
-      isRunning = true;
-      btnPlayPause.textContent = 'Pausar';
-    }
-  });
+    });
+  }
+
+  if (btnReset) {
+    btnReset.addEventListener('click', () => {
+      if (currentGenome) {
+        automaton.plantEmbryo(currentGenome.embryo, currentGenome.maxGenerations, currentGenome.membraneRadius);
+        updateGenDisplay();
+        updateSealBadge(false);
+        isRunning = true;
+        if (btnPlayPause) btnPlayPause.textContent = 'Pausar';
+      }
+    });
+  }
 
   // Guardar Glifo estático
-  btnSaveGlyph.addEventListener('click', () => {
-    const filename = `glifo_${(currentGenome.input || 'anonimo').toLowerCase()}_${currentGenome.hexHash}`;
-    saveCanvas(filename, 'png');
-  });
+  if (btnSaveGlyph) {
+    btnSaveGlyph.addEventListener('click', () => {
+      const filename = `glifo_${(currentGenome.input || 'anonimo').toLowerCase()}_${currentGenome.hexHash}`;
+      saveCanvas(filename, 'png');
+    });
+  }
 
   // Toggles
-  chkImmortal.addEventListener('change', (e) => automaton.setImmortalCore(e.target.checked));
-  chkApoptosis.addEventListener('change', (e) => {
-    automaton.setApoptosis(e.target.checked, parseInt(sliderApoptosisThresh.value, 10));
-  });
-  chkSymmetry.addEventListener('change', (e) => automaton.setSymmetry(e.target.checked));
-  chkMembrane.addEventListener('change', (e) => automaton.setMembrane(e.target.checked));
-  chkIndelible.addEventListener('change', (e) => automaton.setIndelible(e.target.checked));
+  if (chkImmortal) chkImmortal.addEventListener('change', (e) => automaton.setImmortalCore(e.target.checked));
+  if (chkApoptosis) {
+    chkApoptosis.addEventListener('change', (e) => {
+      automaton.setApoptosis(e.target.checked, sliderApoptosisThresh ? parseInt(sliderApoptosisThresh.value, 10) : 6);
+    });
+  }
+  if (chkSymmetry) chkSymmetry.addEventListener('change', (e) => automaton.setSymmetry(e.target.checked));
+  if (chkMembrane) chkMembrane.addEventListener('change', (e) => automaton.setMembrane(e.target.checked));
+  if (chkIndelible) chkIndelible.addEventListener('change', (e) => automaton.setIndelible(e.target.checked));
 
   // Regla
-  selectRule.addEventListener('change', (e) => {
-    userOverrides.ruleId = e.target.value;
-    userOverrides.birth = null;
-    userOverrides.survival = null;
-    triggerConsultation();
-  });
+  if (selectRule) {
+    selectRule.addEventListener('change', (e) => {
+      userOverrides.ruleId = e.target.value;
+      userOverrides.birth = null;
+      userOverrides.survival = null;
+      triggerConsultation();
+    });
+  }
 
-  birthBoxesContainer.addEventListener('change', readRuleCheckboxes);
-  survivalBoxesContainer.addEventListener('change', readRuleCheckboxes);
+  if (birthBoxesContainer) birthBoxesContainer.addEventListener('change', readRuleCheckboxes);
+  if (survivalBoxesContainer) survivalBoxesContainer.addEventListener('change', readRuleCheckboxes);
 
   // Paleta
-  selectPalette.addEventListener('change', (e) => {
-    const val = e.target.value;
-    if (val === 'auto') {
-      delete userOverrides.paletteIndex;
-    } else {
-      userOverrides.paletteIndex = parseInt(val, 10);
-    }
-    if (currentGenome) {
-      currentGenome.palette = userOverrides.paletteIndex !== undefined
-        ? PALETTES[userOverrides.paletteIndex]
-        : PALETTES[Math.floor(Math.abs(currentGenome.seed) % PALETTES.length)];
-    }
-  });
+  if (selectPalette) {
+    selectPalette.addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val === 'auto') {
+        delete userOverrides.paletteIndex;
+      } else {
+        userOverrides.paletteIndex = parseInt(val, 10);
+      }
+      if (currentGenome) {
+        currentGenome.palette = userOverrides.paletteIndex !== undefined
+          ? PALETTES[userOverrides.paletteIndex]
+          : PALETTES[Math.floor(Math.abs(currentGenome.seed) % PALETTES.length)];
+      }
+    });
+  }
 
   // Sliders
-  sliderFps.addEventListener('input', (e) => {
-    const fps = parseInt(e.target.value, 10);
-    valFps.textContent = fps;
-    frameRate(fps);
-  });
+  if (sliderFps) {
+    sliderFps.addEventListener('input', (e) => {
+      const fps = parseInt(e.target.value, 10);
+      if (valFps) valFps.textContent = fps;
+      frameRate(fps);
+    });
+  }
 
-  sliderMaxGen.addEventListener('input', (e) => {
-    const maxGen = parseInt(e.target.value, 10);
-    valMaxGen.textContent = maxGen;
-    userOverrides.maxGenerations = maxGen;
-    automaton.setMaxGenerations(maxGen);
-    updateGenDisplay();
-  });
+  if (sliderMaxGen) {
+    sliderMaxGen.addEventListener('input', (e) => {
+      const maxGen = parseInt(e.target.value, 10);
+      if (valMaxGen) valMaxGen.textContent = maxGen;
+      userOverrides.maxGenerations = maxGen;
+      automaton.setMaxGenerations(maxGen);
+      updateGenDisplay();
+    });
+  }
 
-  sliderMembraneRad.addEventListener('input', (e) => {
-    const rad = parseInt(e.target.value, 10);
-    valMembraneRad.textContent = `${rad} celdas`;
-    userOverrides.membraneRadius = rad;
-    automaton.setMembrane(chkMembrane.checked, rad);
-  });
+  if (sliderMembraneRad) {
+    sliderMembraneRad.addEventListener('input', (e) => {
+      const rad = parseInt(e.target.value, 10);
+      if (valMembraneRad) valMembraneRad.textContent = `${rad} celdas`;
+      userOverrides.membraneRadius = rad;
+      automaton.setMembrane(chkMembrane ? chkMembrane.checked : true, rad);
+    });
+  }
 
-  sliderApoptosisThresh.addEventListener('input', (e) => {
-    const th = parseInt(e.target.value, 10);
-    valApoptosisThresh.textContent = `≥ ${th} vecinos`;
-    automaton.setApoptosis(chkApoptosis.checked, th);
-  });
+  if (sliderApoptosisThresh) {
+    sliderApoptosisThresh.addEventListener('input', (e) => {
+      const th = parseInt(e.target.value, 10);
+      if (valApoptosisThresh) valApoptosisThresh.textContent = `≥ ${th} vecinos`;
+      automaton.setApoptosis(chkApoptosis ? chkApoptosis.checked : true, th);
+    });
+  }
 }
 
 function triggerConsultation() {
@@ -269,38 +308,46 @@ function triggerConsultation() {
 
   // Configurar autómata
   automaton.setRule(currentGenome.rule);
-  automaton.setImmortalCore(chkImmortal.checked);
-  automaton.setApoptosis(chkApoptosis.checked, parseInt(sliderApoptosisThresh.value, 10));
-  automaton.setSymmetry(chkSymmetry.checked);
-  automaton.setMembrane(chkMembrane.checked, currentGenome.membraneRadius);
-  automaton.setIndelible(chkIndelible.checked);
+  automaton.setImmortalCore(chkImmortal ? chkImmortal.checked : false);
+  automaton.setApoptosis(
+    chkApoptosis ? chkApoptosis.checked : true,
+    sliderApoptosisThresh ? parseInt(sliderApoptosisThresh.value, 10) : 6
+  );
+  automaton.setSymmetry(chkSymmetry ? chkSymmetry.checked : true);
+  automaton.setMembrane(
+    chkMembrane ? chkMembrane.checked : true,
+    currentGenome.membraneRadius
+  );
+  automaton.setIndelible(chkIndelible ? chkIndelible.checked : true);
   automaton.plantEmbryo(currentGenome.embryo, currentGenome.maxGenerations, currentGenome.membraneRadius);
 
-  // Sincronizar sliders
-  sliderMaxGen.value = currentGenome.maxGenerations;
-  valMaxGen.textContent = currentGenome.maxGenerations;
+  // Sincronizar sliders si existen
+  if (sliderMaxGen) sliderMaxGen.value = currentGenome.maxGenerations;
+  if (valMaxGen) valMaxGen.textContent = currentGenome.maxGenerations;
 
-  sliderMembraneRad.value = currentGenome.membraneRadius;
-  valMembraneRad.textContent = `${currentGenome.membraneRadius} celdas`;
+  if (sliderMembraneRad) sliderMembraneRad.value = currentGenome.membraneRadius;
+  if (valMembraneRad) valMembraneRad.textContent = `${currentGenome.membraneRadius} celdas`;
 
   syncRuleCheckboxes(currentGenome.rule.birth, currentGenome.rule.survival);
 
   // Actualizar UI
-  readoutName.textContent = currentGenome.input || '(Silencio)';
-  readoutHash.textContent = currentGenome.hexHash;
-  readoutRule.textContent = `${currentGenome.ruleName} [${currentGenome.ruleString}]`;
+  if (readoutName) readoutName.textContent = currentGenome.input || '(Silencio)';
+  if (readoutHash) readoutHash.textContent = currentGenome.hexHash;
+  if (readoutRule) readoutRule.textContent = `${currentGenome.ruleName} [${currentGenome.ruleString}]`;
 
   updateGenDisplay();
   updateSealBadge(false);
 
   isRunning = true;
-  btnPlayPause.textContent = 'Pausar';
+  if (btnPlayPause) btnPlayPause.textContent = 'Pausar';
 }
 
 function togglePlayPause() {
   if (automaton.isSealed) return;
   isRunning = !isRunning;
-  btnPlayPause.textContent = isRunning ? 'Pausar' : 'Reanudar';
+  if (btnPlayPause) {
+    btnPlayPause.textContent = isRunning ? 'Pausar' : 'Reanudar';
+  }
 }
 
 function updateGenDisplay() {
@@ -310,6 +357,7 @@ function updateGenDisplay() {
 }
 
 function updateSealBadge(isSealed) {
+  if (!sealStatusBadge || !sealStatusText) return;
   if (isSealed) {
     sealStatusBadge.className = 'seal-badge sealed';
     sealStatusText.textContent = '✦ SELLO CONSUMADO (ENIGMA FIJADO) ✦';
@@ -334,7 +382,7 @@ function draw() {
 
     if (automaton.isSealed) {
       isRunning = false;
-      btnPlayPause.textContent = 'Completado';
+      if (btnPlayPause) btnPlayPause.textContent = 'Completado';
       updateSealBadge(true);
     }
   }

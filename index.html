@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Oráculo — Autómata Celular Simétrico</title>
+    <title>Bestiario Oracular — Autómata Celular</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script src="libraries/p5.min.js"></script>
     <script src="oracle.js"></script>
@@ -13,7 +13,7 @@
     <main class="oracle-app">
       <!-- Encabezado Místico -->
       <header class="oracle-header">
-        <h1>ORÁCULO</h1>
+        <h1>BESTIARIO ORACULAR</h1>
         <p class="subtitle">Exploración generativa del enigma, la revelación y el cuerpo monstruoso</p>
       </header>
 
@@ -29,7 +29,8 @@
           />
           <button id="btnConsult" class="btn-primary">Consultar Oráculo</button>
         </div>
-        <div class="playback-controls">
+        <!-- Controles de laboratorio (Ocultos en producción) -->
+        <div class="playback-controls lab-only">
           <button id="btnPlayPause" class="btn-secondary">Pausar</button>
           <button id="btnStep" class="btn-secondary">Paso a paso</button>
           <button id="btnReset" class="btn-secondary">Renacer Embrión</button>
@@ -41,16 +42,10 @@
       <div class="workspace-layout">
         <!-- Canvas de la Criatura -->
         <div class="canvas-column">
-          <!-- Indicador de Estado del Sello -->
-          <div id="sealStatusBadge" class="seal-badge in-progress">
-            <span class="seal-icon">✦</span>
-            <span id="sealStatusText">REVELACIÓN EN CURSO...</span>
-          </div>
-
           <div id="canvas-container"></div>
 
-          <!-- Lectura de la Firma Oracular -->
-          <section class="enigma-readout">
+          <!-- Lectura de la Firma Oracular (Solo visible en laboratorio) -->
+          <section class="enigma-readout lab-only">
             <div class="info-card">
               <span class="label">CONSULTA:</span>
               <span id="readoutName" class="value">—</span>
@@ -70,8 +65,8 @@
           </section>
         </div>
 
-        <!-- Panel Lateral de Modulación y Experimentación -->
-        <aside class="parameters-panel">
+        <!-- Panel Lateral de Modulación y Experimentación (Solo visible en laboratorio) -->
+        <aside class="parameters-panel lab-only">
           <h2 class="panel-title">MODULACIÓN ANATÓMICA</h2>
 
           <!-- Bloque de Confinamiento & Estructura -->
@@ -87,9 +82,9 @@
               </span>
             </label>
 
-            <!-- A-1: Esqueleto Inmortal -->
+            <!-- A-1: Esqueleto Inmortal (Desactivado por defecto) -->
             <label class="toggle-control">
-              <input type="checkbox" id="chkImmortal" checked />
+              <input type="checkbox" id="chkImmortal" />
               <span class="toggle-label">
                 <strong>Esqueleto Inmortal (A-1)</strong>
                 <small>Las células germinales originarias nunca mueren</small>
@@ -193,9 +188,9 @@
             <div class="control-row">
               <label for="selectPalette">Paleta Estética:</label>
               <select id="selectPalette">
+                <option value="1" selected>Carbón & Sangre Seca (Predeterminada)</option>
                 <option value="auto">Automática (Firma del Nombre)</option>
                 <option value="0">Pergamino & Bilis</option>
-                <option value="1">Carbón & Sangre Seca</option>
                 <option value="2">Hueso & Ceniza</option>
                 <option value="3">Éter & Manía Mistérica</option>
                 <option value="4">Cobre & Azufre</option>

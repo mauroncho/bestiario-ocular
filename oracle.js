@@ -146,10 +146,10 @@ function deriveOracleGenome(inputString, overrides = {}) {
   birth.sort((a, b) => a - b);
   survival.sort((a, b) => a - b);
 
-  // Paleta
+  // Paleta fija a "Carbón & Sangre Seca" (índice 1: tonos abisales y rojo sangre)
   const paletteIndex = overrides.paletteIndex !== undefined
     ? overrides.paletteIndex
-    : Math.floor(random() * PALETTES.length);
+    : 1; // 1 = Carbón & Sangre Seca
   const palette = PALETTES[paletteIndex % PALETTES.length];
 
   // Geometría del embrión central

@@ -153,3 +153,31 @@ Comprobar si introducir una regla biológica de **necrosis por sobrepoblación/a
 
 ### Próximos pasos
 - Abordar el segundo punto planteado: las variaciones de color (por ejemplo, envejecimiento celular por madurez o coloración por estrés de densidad) para que el volumen adquiera gradaciones cromáticas vivas.
+
+---
+
+### Experimento 06: Puesta en Producción del Bestiario Oracular (Morfología Efímera & Despojo de la Interfaz)
+
+**Hipótesis:**
+La transición de un prototipo de laboratorio a una obra interactiva de carácter oracular requiere despojar al dispositivo de su apariencia de software o herramienta de depuración. Al suprimir la telemetría visible, los controles de reproducción y la consola de modulación paramétrica, la experiencia se concentra puramente en la consulta y la revelación. En el plano biológico, desactivar el esqueleto inmortal permite que el embrión original experimente muerte y transmutación radical, confiriendo a la criatura una morfología no anclada a una cruz fija.
+
+**Implementación:**
+1. **Identidad formal:** Nombramiento definitivo de la obra como **«Bestiario Oracular»**.
+2. **Purificación de la Interfaz:**
+   - Supresión del indicador de sello sobre el lienzo.
+   - Ocultamiento de la lectura diagnóstica bajo el canvas (`.enigma-readout`).
+   - Retiro de los botones de reproducción de la barra de invocación (*paso a paso*, *pausar*, *renacer embrión*, *descargar glifo*).
+   - Ocultamiento del panel lateral de modulación anatómica (`.parameters-panel`).
+3. **Mecanismo de Laboratorio Oculto:**
+   - La suite completa de experimentación queda preservada en el código bajo la clase `.lab-only` (con `display: none !important` en producción).
+   - Puede reactivarse en cualquier momento mediante la tecla **`D`** (fuera del foco del input) o agregando `?dev=true` / `?lab=true` en la URL.
+4. **Mortalidad de Células Originarias:**
+   - Parámetro `immortalCoreEnabled = false` por defecto en [automaton.js](file:///c:/Users/maugi/OneDrive/Escritorio/UNA/UNA%202026/fe/final/automata/automaton.js).
+   - Las células germinales del embrión quedan sujetas a muerte por subpoblación, sobrepoblación o apoptosis celular.
+
+**Resultado:**
+- En pantalla solo resalta el encabezado hierático, el campo de consulta con su botón de invocación y el canvas de 640×640 px perfectamente centrado sobre fondo abisal.
+- Las criaturas ganan una plasticidad orgánica inédita: las formas se ahuecan en el centro, forman arcos, anillos de tensión o se disuelven en rastros fósiles según la regla invocada.
+
+**Lectura conceptual:**
+El despojo de la interfaz acerca la obra a la noción de *enigma* de Giorgio Colli: no se exhibe la maquinaria algorítmica ni sus engranajes métricos, sino únicamente la superficie donde se manifiesta la revelación. La muerte de las células originarias acentúa la dimensión de patetismo y mutabilidad del monstruo apocalíptico: el origen no es eterno, es consumido por el propio proceso de su inscripción.
