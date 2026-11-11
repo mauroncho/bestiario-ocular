@@ -69,6 +69,35 @@
         <aside class="parameters-panel lab-only">
           <h2 class="panel-title">MODULACIÓN ANATÓMICA</h2>
 
+          <!-- Estética & Representación (Experimento 07: Grabado Alquímico) -->
+          <div class="param-section">
+            <h3 class="section-title">Estética & Representación</h3>
+            
+            <div class="control-row">
+              <label for="selectRenderMode">Modo de Renderizado:</label>
+              <select id="selectRenderMode">
+                <option value="alchemical" selected>Grabado Alquímico (Opción 2)</option>
+                <option value="legacy">Matriz Cruda (Píxeles)</option>
+              </select>
+            </div>
+
+            <label class="toggle-control">
+              <input type="checkbox" id="chkContourLines" checked />
+              <span class="toggle-label">
+                <strong>Estrías Topográficas (Isolíneas)</strong>
+                <small>Curvas de nivel de grabado al estilo códice</small>
+              </span>
+            </label>
+
+            <label class="toggle-control">
+              <input type="checkbox" id="chkCrestGlow" />
+              <span class="toggle-label">
+                <strong>Crestas & Ocelos Resaltados</strong>
+                <small>Focos vertebrales y pupilas incandescentes (opcional)</small>
+              </span>
+            </label>
+          </div>
+
           <!-- Bloque de Confinamiento & Estructura -->
           <div class="param-section">
             <h3 class="section-title">Contención & Hueso</h3>

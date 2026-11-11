@@ -181,3 +181,52 @@ La transición de un prototipo de laboratorio a una obra interactiva de carácte
 
 **Lectura conceptual:**
 El despojo de la interfaz acerca la obra a la noción de *enigma* de Giorgio Colli: no se exhibe la maquinaria algorítmica ni sus engranajes métricos, sino únicamente la superficie donde se manifiesta la revelación. La muerte de las células originarias acentúa la dimensión de patetismo y mutabilidad del monstruo apocalíptico: el origen no es eterno, es consumido por el propio proceso de su inscripción.
+
+---
+
+## Experimento 07: Grabado Alquímico & Códice de Patmos (Contornos Continuos, Cavidades Profundas y Crestas Iluminadas)
+
+**Fecha:** Noviembre 2026  
+**Entorno:** p5.js, JavaScript modular (`sketch.js`, `index.html`, `style.css`)
+
+### Hipótesis
+Sustituir el renderizado ortogonal discreto (cuadraditos de 8×8 px con puntos interiores) por un sistema de **fusión anatómica continua (Grabado Alquímico)** que articule una estética monstruosa y homogénea sin alterar el algoritmo biológico subyacente. La hipótesis plantea que:
+1. Las cavidades viscerales originadas por apoptosis y necrosis por asfixia celular ganan potencia visual si se conservan como abismos oscuros recortados por curvas de nivel continuas (Marching Squares interpolado).
+2. Los puntos estructurales clave (vértebras maduras en equilibrio y células óseas) deben preservarse y potenciarse como crestas luminosas, filamentos continuos y ocelos sagrados, maximizando el contraste de claroscuro con el manto carnoso oscuro.
+
+### Implementación
+1. **Manto Carnoso Continuo & Conectividad Anatómica (`sketch.js`):**
+   - Se eliminaron los llamados a `rect()` sobre la grilla celular para el modo principal.
+   - Las células vivas evalúan su vecindad adyacente y se conectan mediante cápsulas cilíndricas de punta redondeada (`strokeWeight(CELL_SIZE * 1.32)`, `strokeCap(ROUND)`), fusionando el tejido en una masa fluida, indivisible y sin costuras ortogonales.
+   - Modulación cromática por sobrepoblación: las zonas viscerales hiperdensas ($\ge 5$ vecinos) se sumergen en penumbra negruzca/sangre coagulada, mientras las masas elásticas retienen un tono carmesí vivo.
+2. **Isolíneas Topográficas de Grabado (Marching Squares):**
+   - Se construye un campo escalar continuo $V(y, x)$ suavizado mediante un kernel de difusión 3×3, obligando a que las células necrosadas permanezcan estrictamente en $0.0$.
+   - Se trazan tres estratos de isolíneas interpoladas (Aura exterior $T=0.22$, Piel del manto $T=0.48$ y Estrato muscular $T=0.72$), emulando las estrías de una xilografía o aguafuerte antiguo que contornea las cavidades internas.
+3. **Crestas Óseas & Ocelos Resaltados:**
+   - Las células maduras en equilibrio ($N \in \{2, 3\}$ y $\text{edad} \ge 3$) y las trabéculas óseas se enlazan mediante filamentos de luz marfil/oro (`pal.core`).
+   - Cada nodo focal se transforma en un **ocelo orgánico compuesto**: un halo radiante, un cáliz carmesí, un núcleo incandescente y una micro-pupila abisal que conecta con el abismo del fondo, reforzando la dimensión del *Bestiario Ocular*.
+4. **Substrato de Códice & Respiración del Sello:**
+   - Pre-renderizado en `p5.Graphics` de un fondo con viñeta radial y micro-grano de placa de imprenta / papel quemado.
+   - Al sellarse el oráculo (`isSealed`), la criatura retiene una pulsación lumínica lenta y solemne en sus focos y en la membrana radial.
+5. **Preservación Comparativa en Laboratorio:**
+   - La suite de desarrollo (tecla `D`) incorpora un selector de *Modo de Renderizado* para alternar en cualquier instante entre el nuevo *Grabado Alquímico* y la *Matriz Cruda (Píxeles)*.
+
+### Parámetros
+- **Resolución:** Lienzo de $640 \times 640$ px ($80 \times 80$ células a $8$ px/célula), con `pixelDensity` dinámico para renderizado vectorial nítido.
+- **Estratos de Isolíneas:** $T \in \{0.22, 0.48, 0.72\}$ con grosores de $0.95$ a $1.35$ px.
+- **Preservación de Cavidades:** Factor $V_{\text{smooth}}(x, y) = 0.0$ si `necrotized === 1`.
+
+### Resultado observado
+- Desaparición total del aspecto de "grilla de píxeles" o software retro: el monstruo adquiere el aspecto de una aparición sacra grabada en una lámina antigua de alquimia o un tratado apocalíptico de Patmos.
+- Las cavidades creadas por la apoptosis central ahora se perciben como verdaderos ventrículos, cuencas oculares y fosas viscerales oscuras, enmarcadas orgánicamente por las isolíneas de grabado.
+- Las crestas y ocelos incandescentes saltan a primer plano con gran intensidad, resolviendo la necesidad de retener los nodos resaltados pero integrándolos fluidamente al cuerpo.
+- Rendimiento impecable a 24-60 FPS gracias al pre-renderizado del substrato y al cómputo eficiente en Float32Array.
+
+### Lectura conceptual
+- **El Monstruo como Códice Vivo (Colli):** El oráculo ya no parece un juego de pantalla digital, sino una inscripción sagrada que emerge de un manuscrito. La escritura no es sólo texto: es el cuerpo mismo del monstruo grabado en la materia.
+- **La Fascinación de la Mirada y Patmos:** Al sustituir los pequeños cuadrados centrales por ocelos compuestos y cavidades orbitales, la criatura adquiere una mirada indescifrable que interpela directamente al consultante.
+- **La Carne Abrupta (Kristeva):** La masa unificada y las sombras de asfixia visceral materializan la pulsión biológica sin caer en la ilustración figurativa convencional: es carne que busca articularse como lenguaje pero se detiene en el enigma.
+
+### Próximos pasos
+- Explorar micro-variaciones de aberración lumínica o turbulencia asimétrica al momento del sellado definitivo.
+- Investigar la respuesta del campo de isolíneas ante la proximidad contemplativa del cursor.

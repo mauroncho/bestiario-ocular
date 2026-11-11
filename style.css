@@ -223,6 +223,9 @@ button:hover {
 
 #canvas-container canvas {
   display: block;
+}
+
+#canvas-container canvas.pixelated {
   image-rendering: pixelated;
 }
 
