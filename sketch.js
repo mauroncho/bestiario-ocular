@@ -15,7 +15,7 @@ const CELL_SIZE = 8; // 80 * 8 = 640px
 
 let automaton;
 let currentGenome = null;
-let isRunning = true;
+let isRunning = false;
 let canvasElem = null;
 
 // Modos y configuraciones visuales (Experimento 07)
@@ -61,8 +61,9 @@ function setup() {
   attachEventListeners();
   setupLabModeShortcuts();
 
-  // Consulta inicial predeterminada
-  triggerConsultation();
+  // Preparar la placa de fondo inicial en espera de una consulta
+  const defaultPalette = PALETTES[userOverrides.paletteIndex !== undefined ? userOverrides.paletteIndex : 1];
+  generateBgPlate(defaultPalette);
 }
 
 function setupLabModeShortcuts() {
@@ -209,7 +210,7 @@ function attachEventListeners() {
 
   if (btnStep) {
     btnStep.addEventListener('click', () => {
-      if (automaton.isSealed) return;
+      if (!currentGenome || automaton.isSealed) return;
       isRunning = false;
       if (btnPlayPause) btnPlayPause.textContent = 'Reanudar';
       automaton.step();
@@ -232,6 +233,7 @@ function attachEventListeners() {
   // Guardar Glifo estático
   if (btnSaveGlyph) {
     btnSaveGlyph.addEventListener('click', () => {
+      if (!currentGenome) return;
       const modeSuffix = currentRenderMode === 'alchemical' ? 'grabado' : 'crudo';
       const filename = `bestiario_${(currentGenome.input || 'anonimo').toLowerCase()}_${currentGenome.hexHash}_${modeSuffix}`;
       saveCanvas(filename, 'png');
@@ -414,7 +416,12 @@ function generateBgPlate(pal) {
 }
 
 function triggerConsultation() {
-  const query = inputElem.value;
+  const query = (inputElem.value || '').trim();
+  if (query.length === 0) {
+    inputElem.focus();
+    return;
+  }
+
   currentGenome = deriveOracleGenome(query, userOverrides);
 
   // Configurar autómata
@@ -457,7 +464,7 @@ function triggerConsultation() {
 }
 
 function togglePlayPause() {
-  if (automaton.isSealed) return;
+  if (!currentGenome || automaton.isSealed) return;
   isRunning = !isRunning;
   if (btnPlayPause) {
     btnPlayPause.textContent = isRunning ? 'Pausar' : 'Reanudar';
@@ -482,7 +489,15 @@ function updateSealBadge(isSealed) {
 }
 
 function draw() {
-  if (!currentGenome) return;
+  if (!currentGenome) {
+    if (bgPlate) {
+      image(bgPlate, 0, 0);
+    } else {
+      const defaultPalette = PALETTES[userOverrides.paletteIndex !== undefined ? userOverrides.paletteIndex : 1];
+      background(defaultPalette.bg[0], defaultPalette.bg[1], defaultPalette.bg[2]);
+    }
+    return;
+  }
 
   const pal = currentGenome.palette;
 
